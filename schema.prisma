@@ -1,0 +1,42 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model App {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  title       String
+  shortDesc   String
+  longDesc    String
+  version     String
+  sizeMB      String
+  minAndroid  String
+  updatedAt   DateTime  @updatedAt
+  playLink    String
+  screenshots String[]
+  tags        String[]
+  categoryId  Int
+  Category    Category  @relation(fields: [categoryId], references: [id])
+  publisherId Int?
+  Publisher   Publisher? @relation(fields: [publisherId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String
+  slug  String  @unique
+  apps  App[]
+}
+
+model Publisher {
+  id    Int    @id @default(autoincrement())
+  name  String
+  site  String?
+  apps  App[]
+}
